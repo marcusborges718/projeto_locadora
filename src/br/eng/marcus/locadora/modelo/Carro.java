@@ -9,6 +9,7 @@ package br.eng.marcus.locadora.modelo;
  * @author Marcus Borges
  */
 public class Carro {
+    
     //Contantes, o uso de "static final" serve para declar valores pre-definidos
     //Sem precisar chamar pelo "NEW"
     public static final String MARCA_HYUNDAI = "HYUNDAI";
@@ -17,7 +18,6 @@ public class Carro {
     public static final String COR_BRANCO = "BRANCO";
     public static final String COR_PRATA = "PRATA";
     public static final String COR_PRETO = "PRETO";
-    
     
     public static final String MODELO_HYUNDAI_HB20 = "HB20";
     public static final String MODELO_HYUNDAI_CRETA = "CRETA";
@@ -30,8 +30,6 @@ public class Carro {
     public static final String TIPO_ULTILITARIO = "UTILITÁRIO";
     public static final String TIPO_CAMIONETE = "CAMIONETE";
     public static final String TIPO_SUV = "SUV";
-    
-    
     
     //Atributos
     
