@@ -7,7 +7,7 @@ package br.eng.marcus.locadora.modelo;
 import java.util.Date;
 
 /**
- *
+ * Esta classe armazena os dados da reserva efetuada
  * @author Marcus Borges
  */
 public class Reserva {
