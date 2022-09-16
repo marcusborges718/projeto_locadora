@@ -5,7 +5,13 @@
 package br.eng.marcus.locadora.tela;
 
 import br.eng.marcus.locadora.modelo.Carro;
+import br.eng.marcus.locadora.modelo.Cliente;
+import br.eng.marcus.locadora.modelo.Pessoa;
+import br.eng.marcus.locadora.modelo.Veiculo;
+import br.eng.marcus.locadora.tela.render.DesignListaCarros;
+import java.awt.GridLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 
 /**
  *
@@ -13,14 +19,16 @@ import javax.swing.DefaultListModel;
  */
 public class TelaPrincipal extends javax.swing.JFrame {
 
+    private DefaultListModel<Carro> catalogo = new DefaultListModel<>();
+    
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
+        montaCatalogo();
+       
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,76 +39,88 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanelContent = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jListCarrosDescricao = new javax.swing.JList<>();
+        jListCarros = new javax.swing.JList();
         jButtonPrimeiraTela = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(102, 255, 102));
+        jPanelContent.setBackground(new java.awt.Color(255, 102, 0));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 3, 30)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Escolha seu carro");
 
-        jListCarrosDescricao.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jListCarrosDescricao);
+        jListCarros.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListCarros.setCellRenderer(new DesignListaCarros()
+        );
+        jScrollPane1.setViewportView(jListCarros);
 
-        jButtonPrimeiraTela.setBackground(new java.awt.Color(0, 153, 51));
-        jButtonPrimeiraTela.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jButtonPrimeiraTela.setBackground(new java.awt.Color(255, 102, 0));
+        jButtonPrimeiraTela.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jButtonPrimeiraTela.setForeground(new java.awt.Color(255, 255, 255));
         jButtonPrimeiraTela.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/imagens/icon/icone.png"))); // NOI18N
-        jButtonPrimeiraTela.setText("AVANÇAR");
+        jButtonPrimeiraTela.setText("Avançar");
+        jButtonPrimeiraTela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrimeiraTelaActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/imagens/icon/apoio.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanelContentLayout = new javax.swing.GroupLayout(jPanelContent);
+        jPanelContent.setLayout(jPanelContentLayout);
+        jPanelContentLayout.setHorizontalGroup(
+            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelContentLayout.createSequentialGroup()
                 .addGap(117, 117, 117)
                 .addComponent(jLabel1)
-                .addContainerGap(125, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelContentLayout.createSequentialGroup()
+                .addGap(44, 44, 44)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonPrimeiraTela))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelContentLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanelContentLayout.setVerticalGroup(
+            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelContentLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonPrimeiraTela)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonPrimeiraTela)
+                    .addGroup(jPanelContentLayout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelContent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanelContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonPrimeiraTelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrimeiraTelaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonPrimeiraTelaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,92 +161,109 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public void montaCatalogo(){
         Carro carro1 = new Carro();
         carro1.setAr(true);
-        carro1.setCor(Carro.COR_PRETO);
-        carro1.setKm(0);
-        carro1.setMarca(Carro.MARCA_FIAT);
-        carro1.setModelo(Carro.MODELO_FIAT_ARGO);
-        carro1.setMotor("1.0 Flex");
+        carro1.setCor(Veiculo.COR_PRETO);
+        carro1.setKm(200);
+        carro1.setMarca(Veiculo.MARCA_FIAT);
+        carro1.setModelo(Veiculo.MODELO_FIAT_ARGO);
+        carro1.setMotor("1.0");
         carro1.setPlaca("BRA-0001");
-        carro1.setTipo(Carro.TIPO_HATCH);
+        carro1.setTipo(Veiculo.TIPO_HATCH);
         carro1.setValorDiaria(100.00);
         carro1.setValorcalcao(700.00);
+        carro1.setCombustivel(Veiculo.COMBUSTIVEL_FLEX);
+        carro1.setFoto(getClass().getResource("/resources/imagens/carros/argoPreto2.png"));
         
         Carro carro2 = new Carro();
         carro2.setAr(true);
-        carro2.setCor(Carro.COR_PRETO);
+        carro2.setCor(Veiculo.COR_PRETO);
         carro2.setKm(0);
-        carro2.setMarca(Carro.MARCA_FIAT);
-        carro2.setModelo(Carro.MODELO_FIAT_TORO);
-        carro2.setMotor("2.0 Diesel");
+        carro2.setMarca(Veiculo.MARCA_FIAT);
+        carro2.setModelo(Veiculo.MODELO_FIAT_TORO);
+        carro2.setMotor("2.0");
         carro2.setPlaca("PRQ-1098");
-        carro2.setTipo(Carro.TIPO_CAMIONETE);
+        carro2.setTipo(Veiculo.TIPO_CAMIONETE);
         carro2.setValorDiaria(160.00);
         carro2.setValorcalcao(1000.00);
+        carro2.setCombustivel(Veiculo.COMBUSTIVEL_DIESEL);
+        carro2.setFoto(getClass().getResource("/resources/imagens/carros/toroPreta2.png"));
+        
         
         Carro carro3 = new Carro();
         carro3.setAr(true);
         carro3.setCor(Carro.COR_BRANCO);
         carro3.setKm(0);
-        carro3.setMarca(Carro.MARCA_RENAULT);
-        carro3.setModelo(Carro.MODELO_RENAULT_KWID);
-        carro3.setMotor("1.0 Flex");
+        carro3.setMarca(Veiculo.MARCA_RENAULT);
+        carro3.setModelo(Veiculo.MODELO_RENAULT_KWID);
+        carro3.setMotor("1.0");
         carro3.setPlaca("PRQ-0001");
-        carro3.setTipo(Carro.TIPO_HATCH);
-        carro3.setValorDiaria(90.00);
+        carro3.setTipo(Veiculo.TIPO_HATCH);
+        carro3.setValorDiaria(200.00);
         carro3.setValorcalcao(700.00);
+        carro3.setCombustivel(Veiculo.COMBUSTIVEL_ELETRICO);
+        carro3.setFoto(getClass().getResource("/resources/imagens/carros/kwid2.png"));
         
         Carro carro4 = new Carro();
         carro4.setAr(true);
-        carro4.setCor(Carro.COR_BRANCO);
-        carro4.setKm(0);
-        carro4.setMarca(Carro.MARCA_RENAULT);
-        carro4.setModelo(Carro.MODELO_RENAULT_KANGOO);
-        carro4.setMotor("1.6 Flex");
+        carro4.setCor(Veiculo.COR_BRANCO);
+        carro4.setKm(150);
+        carro4.setMarca(Veiculo.MARCA_RENAULT);
+        carro4.setModelo(Veiculo.MODELO_RENAULT_KANGOO);
+        carro4.setMotor("1.6");
         carro4.setPlaca("PRQ-0061");
-        carro4.setTipo(Carro.TIPO_ULTILITARIO);
+        carro4.setTipo(Veiculo.TIPO_UTILITARIO);
         carro4.setValorDiaria(140.00);
         carro4.setValorcalcao(1000.00);
+        carro4.setCombustivel(Veiculo.COMBUSTIVEL_GASOLINA);
+        carro4.setFoto(getClass().getResource("/resources/imagens/carros/kangooBranco.png"));
         
         Carro carro5 = new Carro();
         carro5.setAr(true);
-        carro5.setCor(Carro.COR_PRATA);
+        carro5.setCor(Veiculo.COR_PRATA);
         carro5.setKm(0);
-        carro5.setMarca(Carro.MARCA_HYUNDAI);
-        carro5.setModelo(Carro.MODELO_HYUNDAI_CRETA);
-        carro5.setMotor("1.6 Flex");
+        carro5.setMarca(Veiculo.MARCA_HYUNDAI);
+        carro5.setModelo(Veiculo.MODELO_HYUNDAI_CRETA);
+        carro5.setMotor("1.6");
         carro5.setPlaca("PRQ-0098");
-        carro5.setTipo(Carro.TIPO_SUV);
+        carro5.setTipo(Veiculo.TIPO_SUV);
         carro5.setValorDiaria(140.00);
         carro5.setValorcalcao(1000.00);
+        carro5.setCombustivel(Veiculo.COMBUSTIVEL_FLEX);
+        carro5.setFoto(getClass().getResource("/resources/imagens/carros/cretaPrata2.png"));
         
         Carro carro6 = new Carro();
         carro6.setAr(true);
-        carro6.setCor(Carro.COR_PRATA);
+        carro6.setCor(Veiculo.COR_PRATA);
         carro6.setKm(0);
-        carro6.setMarca(Carro.MARCA_HYUNDAI);
-        carro6.setModelo(Carro.MODELO_HYUNDAI_HB20);
-        carro6.setMotor("1.0 TURBO FLEX");
+        carro6.setMarca(Veiculo.MARCA_HYUNDAI);
+        carro6.setModelo(Veiculo.MODELO_HYUNDAI_HB20);
+        carro6.setMotor("1.0 TURBO");
         carro6.setPlaca("PRQ-0098");
-        carro6.setTipo(Carro.TIPO_SUV);
+        carro6.setTipo(Veiculo.TIPO_HATCH);
         carro6.setValorDiaria(120.00);
         carro6.setValorcalcao(1000.00);
+        carro6.setCombustivel(Veiculo.COMBUSTIVEL_FLEX);
+        carro6.setFoto(getClass().getResource("/resources/imagens/carros/hb20Prata2.png"));
         
         //Agregando os bjetos em uma lista, 
-        DefaultListModel<Carro> catalogo = new DefaultListModel<>();
-        catalogo.addElement(carro1);
-        catalogo.addElement(carro2);
-        catalogo.addElement(carro3);
-        catalogo.addElement(carro4);
-        catalogo.addElement(carro5);
-        catalogo.addElement(carro6);
+        this.catalogo = new DefaultListModel<Carro>();
+        this.catalogo.addElement(carro1);
+        this.catalogo.addElement(carro2);
+        this.catalogo.addElement(carro3);
+        this.catalogo.addElement(carro4);
+        this.catalogo.addElement(carro5);
+        this.catalogo.addElement(carro6);
         
+        
+        this.jListCarros.setCellRenderer(new DesignListaCarros());
+        this.jListCarros.setModel(this.catalogo);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonPrimeiraTela;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jListCarrosDescricao;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList jListCarros;
+    private javax.swing.JPanel jPanelContent;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
