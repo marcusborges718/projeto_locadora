@@ -77,8 +77,8 @@ public class DesignListaCarros extends JTextPane implements ListCellRenderer<Car
         
         //Marca a cor de fundo no item selecionado na lista
         if(isSelected){
-            setBackground(Color.LIGHT_GRAY);
-            setForeground(Color.BLUE);
+            setBackground(Color.ORANGE);
+            setForeground(Color.WHITE);
         }else{
             setBackground(Color.WHITE);
             setForeground(Color.BLACK);
