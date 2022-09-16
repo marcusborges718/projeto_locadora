@@ -7,11 +7,13 @@ package br.eng.marcus.locadora.tela;
 import br.eng.marcus.locadora.modelo.Carro;
 import br.eng.marcus.locadora.modelo.Cliente;
 import br.eng.marcus.locadora.modelo.Pessoa;
+import br.eng.marcus.locadora.modelo.Reserva;
 import br.eng.marcus.locadora.modelo.Veiculo;
 import br.eng.marcus.locadora.tela.render.DesignListaCarros;
 import java.awt.GridLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,14 +23,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private DefaultListModel<Carro> catalogo = new DefaultListModel<>();
     
+    private Reserva reserva = new Reserva();
+    
+    
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
-        montaCatalogo();
+        montaCatalogo();   
        
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,7 +49,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListCarros = new javax.swing.JList();
-        jButtonPrimeiraTela = new javax.swing.JButton();
+        jButtonListaCarro = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -59,14 +65,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         );
         jScrollPane1.setViewportView(jListCarros);
 
-        jButtonPrimeiraTela.setBackground(new java.awt.Color(0, 0, 0));
-        jButtonPrimeiraTela.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButtonPrimeiraTela.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonPrimeiraTela.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/imagens/icon/icons8-arrow-50.png"))); // NOI18N
-        jButtonPrimeiraTela.setText("Avançar");
-        jButtonPrimeiraTela.addActionListener(new java.awt.event.ActionListener() {
+        jButtonListaCarro.setBackground(new java.awt.Color(0, 0, 0));
+        jButtonListaCarro.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButtonListaCarro.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonListaCarro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/imagens/icon/icons8-arrow-50.png"))); // NOI18N
+        jButtonListaCarro.setText("Avançar");
+        jButtonListaCarro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPrimeiraTelaActionPerformed(evt);
+                jButtonListaCarroActionPerformed(evt);
             }
         });
 
@@ -84,7 +90,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(98, 98, 98)
-                .addComponent(jButtonPrimeiraTela)
+                .addComponent(jButtonListaCarro)
                 .addGap(51, 51, 51))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelContentLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -100,7 +106,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonPrimeiraTela, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonListaCarro, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12))
         );
 
@@ -118,9 +124,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonPrimeiraTelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrimeiraTelaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonPrimeiraTelaActionPerformed
+    private void jButtonListaCarroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonListaCarroActionPerformed
+        
+        if(this.jListCarros.getSelectedIndex() < 0){
+            JOptionPane.showMessageDialog(this, "Nenhum veiculo selecionado. \n"
+                    + "Por favor escolha seu veiculo antes de avançar!");
+            return;
+        }
+        
+        Carro carro = (Carro) this.jListCarros.getSelectedValue();
+        
+        //implementa tratamento p ver se não é nulo, se for nulo é pq usuario n selecionou item, ai da msg
+        
+        this.reserva.setCarro(carro);
+        
+        //criou onjeto da interface grafica 
+        TelaEscolhaPeriodo telaEscolhaPeriodo = new TelaEscolhaPeriodo(this.reserva);
+        //exibir 
+        telaEscolhaPeriodo.show(true);
+        
+        dispose();
+        
+    }//GEN-LAST:event_jButtonListaCarroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -259,7 +284,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonPrimeiraTela;
+    private javax.swing.JButton jButtonListaCarro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList jListCarros;
