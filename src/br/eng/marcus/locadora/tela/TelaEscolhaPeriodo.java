@@ -31,46 +31,15 @@ public class TelaEscolhaPeriodo extends javax.swing.JFrame {
     private void mostrarVeiculoSelecionado(){
         //TODO: implemrtar tratamento de exceção aqui para validar se foi recebido a reserva com o veículo preenchido
         if(this.reserva==null) {System.exit(1);}
-        
-         String layout = "<html><body>"
-                + "<table style=\"border-bottom:2px solid gray;\">"
-                    + "<tr>"
-                        + "<td style=\"width:200px;\">"
-                            + "<p><b>Tipo:</b> #TIPO</p>"
-                            + "<br>"
-                            + "<p><b>Marca:</b> #MARCA - #MODELO</p>"
-                            + "<p><b>Motor:</b> #MOTOR</p>"
-                            + "<p><b>Combustível:</b> #COMBUSTIVEL</p>"
-                            + "<p><b>Km:</b> #KM</p>"
-                            + "<br>"
-                            + "<p><b>Placa:</b> #PLACA</p>"
-                            + "<p><b>Cor:</b> #COR</p>"
-                        + "</td>"
-                        + "<td><span>&nbsp;</span></td>"
-                    + "</tr>"
-                + "</table>" 
-            + "</body></html>";
          
         Carro carro = this.reserva.getCarro();
         
-       //Formatar kilometragem
-        String km = carro.getKm() == .0 ? "Livre" : String.format("%.2f km", carro.getKm());
-        
         //Aplica as propriedades do carro a ser axibido no texto/modelo
-        String conteudo = layout.replace("#MARCA", carro.getMarca())
-                                .replace("#MODELO", carro.getModelo())
-                                .replace("#COR", carro.getCor())
-                                .replace("#TIPO", carro.getTipo())
-                                .replace("#PLACA", carro.getPlaca())
-                                .replace("#MOTOR", carro.getMotor())
-                                .replace("#KM", km)
-                                .replace("#COMBUSTIVEL", carro.getCombustivel());
-        
+        String conteudo = carro.obterLayout(carro);
          
         jTextPaneVeiculoSelecionado.setContentType("text/html");
         jTextPaneVeiculoSelecionado.setEditable(false);
         jTextPaneVeiculoSelecionado.setText(conteudo);
-       
         
         //Carrega a foto do veículo
         if(carro.getFoto()!=null){
