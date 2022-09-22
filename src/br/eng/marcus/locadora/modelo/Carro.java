@@ -11,7 +11,9 @@ import java.net.URL;
  * @author Marcus Borges
  */
 public class Carro extends Veiculo{
-    //Atributos
+    /*
+    Criação de atributos
+    */
     private double valorDiaria;
     private double valorcalcao;
     private boolean ar;
