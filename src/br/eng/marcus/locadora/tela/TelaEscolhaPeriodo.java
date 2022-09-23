@@ -197,7 +197,7 @@ public class TelaEscolhaPeriodo extends javax.swing.JFrame {
     private void jButtonVoltarParaListaCarroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVoltarParaListaCarroActionPerformed
         
           //criou onjeto da interface grafica 
-        TelaPrincipal telaPrincipal = new TelaPrincipal();
+        TelaListagemVeiculos telaPrincipal = new TelaListagemVeiculos();
         //exibir 
         telaPrincipal.show(true);
         
