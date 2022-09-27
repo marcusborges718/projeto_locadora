@@ -4,15 +4,26 @@
  */
 package br.eng.marcus.locadora.tela.admin;
 
+import br.eng.marcus.locadora.modelo.Marca;
+import br.eng.marcus.locadora.servico.MarcaServico;
+import br.eng.marcus.locadora.servico.Servico;
+import br.eng.marcus.locadora.tela.render.DesignTabelaImagemColuna;
 import java.awt.Image;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +31,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class FormCadastroMarcas extends javax.swing.JInternalFrame {
 
+    private Servico<Marca> marcaServico;
+    
+    private Marca marcaSelecionada;
+    
+    private List<Marca> marcas;
+    
     /**
      * Creates new form FromCadastroMarcas
      */
@@ -27,6 +44,14 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         initComponents();
         
         iniciaTela();
+        
+        try{
+            this.marcaServico = new MarcaServico();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this,
+                            e.getMessage(), "Erro ao conectar no banco de dados!", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
     
     /**
@@ -37,15 +62,62 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         this.jButtonBuscaLogo.setEnabled(false);
         this.jButtonSalvar.setEnabled(false);
         this.jTextFieldLogo.setEnabled(false);
+        this.jTextFieldNome.setEnabled(true);
+        this.jTextFieldID.setEnabled(false);
         this.jButtonCancelar.setEnabled(false);
+        this.jButtonEditar.setEnabled(false);
+        this.jButtonExcluir.setEnabled(false);
         
         //Libera botões a serem usados
         this.jButtonCadastrar.setEnabled(true);
         this.jButtonPesquisar.setEnabled(true);
         
+        //Limpa campos
         this.jLabelLogo.setIcon(null);
         this.jTextFieldLogo.setText("");
-        this.jTextFieldDescricao.setText("");
+        this.jTextFieldNome.setText("");
+        this.jTextFieldID.setText("");
+        
+        //Limpa marcas
+        this.marcaSelecionada = new Marca();      
+        this.marcas = new ArrayList<>();
+        atualizaListaMarcas();
+    }
+    
+    private void mostraMarcaSelecionada(){
+        this.jTextFieldID.setText(String.valueOf(this.marcaSelecionada.getId()));
+        this.jTextFieldNome.setText(this.marcaSelecionada.getNome());
+        this.jTextFieldLogo.setText(this.marcaSelecionada.getLogo());
+        ImageIcon urlImagem = new ImageIcon(new ImageIcon(this.marcaSelecionada.getLogo()).getImage()
+                                .getScaledInstance(75, 75, Image.SCALE_DEFAULT));
+        this.jLabelLogo.setIcon(urlImagem);
+    }
+    
+    private void atualizaListaMarcas(){        
+        DefaultTableModel model =  (DefaultTableModel) jTableMarcas.getModel();
+
+        //Limpa a tabela 
+        model.setNumRows(0);
+
+        for(Marca marca : this.marcas){
+            Object[] saida = new Object[4];
+
+            saida[0] = marca.getId();
+            saida[1] = marca.getNome();
+            saida[2] = marca.getLogo();
+            saida[3] = new ImageIcon(marca.getLogo());
+
+            //Incluir nova linha na Tabela
+            model.addRow(saida);
+        }
+        
+        jTableMarcas.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTableMarcas.getColumnModel().getColumn(0).setPreferredWidth(40);
+        jTableMarcas.getColumnModel().getColumn(1).setPreferredWidth(100);
+        jTableMarcas.getColumnModel().getColumn(2).setPreferredWidth(370);
+        jTableMarcas.getColumnModel().getColumn(3).setPreferredWidth(90);
+        
+        jTableMarcas.getColumnModel().getColumn(3).setCellRenderer(new DesignTabelaImagemColuna());
     }
     
     /**
@@ -56,15 +128,53 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         this.jButtonBuscaLogo.setEnabled(true);
         this.jButtonSalvar.setEnabled(true);
         this.jTextFieldLogo.setEnabled(true);
+        this.jTextFieldNome.setEnabled(true);
         this.jButtonCancelar.setEnabled(true);
+        this.jTextFieldID.setEnabled(false);
         
         //Libera botões a serem usados
         this.jButtonCadastrar.setEnabled(false);
         this.jButtonPesquisar.setEnabled(false);
+        this.jButtonEditar.setEnabled(false);
+        this.jButtonExcluir.setEnabled(false);
         
+        this.marcaSelecionada = new Marca();
         this.jLabelLogo.setIcon(null);
+        this.jTextFieldID.setText("");
+        this.jTextFieldNome.setText("");
         this.jTextFieldLogo.setText("");
-        this.jTextFieldDescricao.setText("");
+    }
+    
+    /**
+     * Libera os botões usados no editar cadastro e bloqueia os desnecessários
+     */
+    private void modoEditar(){
+        this.jButtonCadastrar.setEnabled(false);
+        this.jButtonEditar.setEnabled(false);
+        this.jButtonPesquisar.setEnabled(false);
+        this.jButtonCancelar.setEnabled(true);
+        this.jButtonSalvar.setEnabled(true);
+        this.jButtonBuscaLogo.setEnabled(true);
+        this.jTextFieldLogo.setEnabled(true);
+        this.jTextFieldNome.setEnabled(true);
+    }
+    
+    /**
+     * Libera os botões usados para visualizar cadastro existente e bloqueia os desnecessários
+     */
+    private void modoVizualizar(){
+        int row = jTableMarcas.getSelectedRow();
+        this.marcaSelecionada = this.marcas.get(row);
+        mostraMarcaSelecionada();
+        
+        this.jButtonEditar.setEnabled(true);
+        this.jButtonExcluir.setEnabled(true);
+        this.jButtonCadastrar.setEnabled(true);
+        this.jButtonPesquisar.setEnabled(true);
+        this.jButtonCancelar.setEnabled(true);
+        this.jButtonSalvar.setEnabled(false);
+        this.jButtonBuscaLogo.setEnabled(false);
+        this.jTextFieldLogo.setEditable(false);
     }
 
     /**
@@ -99,6 +209,8 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         jButtonPesquisar = new javax.swing.JButton();
         jButtonCadastrar = new javax.swing.JButton();
         jButtonCancelar = new javax.swing.JButton();
+        jButtonEditar = new javax.swing.JButton();
+        jButtonExcluir = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
         jLabel2.setText("IDENTIFICADOR");
@@ -138,29 +250,28 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "IDENTIFICADOR", "DESCRIÇÃO", "URL", "LOGO"
+                "ID", "Nome", "URL Logo", "Logo"
             }
         ) {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        });
+        jTableMarcas.setRowHeight(60);
+        jTableMarcas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableMarcasMouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(jTableMarcas);
 
         jLabel1.setText("ID:");
 
-        jLabel5.setText("Descrição:");
+        jLabel5.setText("Nome:");
 
         jLabel6.setText("Logo:");
 
@@ -173,6 +284,8 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
             }
         });
 
+        jTextFieldLogo.setEditable(false);
+
         jLabelLogo.setBorder(javax.swing.BorderFactory.createTitledBorder("Logo"));
 
         jButtonSalvar.setText("Salvar");
@@ -183,6 +296,11 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         });
 
         jButtonPesquisar.setText("Pesquisar");
+        jButtonPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPesquisarActionPerformed(evt);
+            }
+        });
 
         jButtonCadastrar.setText("Cadastrar");
         jButtonCadastrar.addActionListener(new java.awt.event.ActionListener() {
@@ -198,6 +316,20 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
             }
         });
 
+        jButtonEditar.setText("Editar");
+        jButtonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditarActionPerformed(evt);
+            }
+        });
+
+        jButtonExcluir.setText("Excluir");
+        jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,6 +341,10 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jButtonPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonExcluir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonEditar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonCadastrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonCancelar)
@@ -220,23 +356,20 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
                                 .addGap(45, 45, 45)
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(2, 2, 2)
-                                        .addComponent(jTextFieldNome))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(29, 29, 29)
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTextFieldLogo)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonBuscaLogo)))
-                                .addGap(12, 12, 12)))
+                                .addComponent(jTextFieldID))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldNome))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldLogo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonBuscaLogo)))
+                        .addGap(12, 12, 12)
                         .addComponent(jLabelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -262,8 +395,10 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButtonPesquisar, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                     .addComponent(jButtonSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButtonCadastrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonEditar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButtonExcluir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
         );
@@ -308,14 +443,32 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
                         JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception iOException) {
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(this,
                         "Selecione uma imagem válida!", "Operação cancelada",
                         JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButtonBuscaLogoActionPerformed
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
-        // TODO add your handling code here:
+        try{
+            this.marcaSelecionada.setNome(jTextFieldNome.getText());
+            this.marcaSelecionada.setLogo(jTextFieldLogo.getText());
+            
+            if(this.marcaSelecionada.getId() == null){
+                this.marcaServico.inserir(this.marcaSelecionada);
+            }else{
+                this.marcaServico.atualizar(this.marcaSelecionada);
+            }
+            
+            JOptionPane.showMessageDialog(this,
+                    "Dados gravados com sucesso!", "Salvo!", JOptionPane.INFORMATION_MESSAGE);
+            
+            iniciaTela();
+            jButtonPesquisar.doClick();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(), "Erro ao salvar dados!", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButtonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastrarActionPerformed
@@ -326,6 +479,42 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
         iniciaTela();
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
+    private void jButtonPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPesquisarActionPerformed
+        try {
+            this.marcas = this.marcaServico.buscar(jTextFieldNome.getText());
+            atualizaListaMarcas();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                        ex.getMessage(), "Erro ao efetuar a pesquisa!",
+                        JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonPesquisarActionPerformed
+
+    private void jTableMarcasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableMarcasMouseClicked
+        modoVizualizar();
+    }//GEN-LAST:event_jTableMarcasMouseClicked
+
+    private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
+        modoEditar();
+    }//GEN-LAST:event_jButtonEditarActionPerformed
+
+    private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
+        try {
+            this.marcaServico.excluir(this.marcaSelecionada.getId());
+            
+            JOptionPane.showMessageDialog(this,
+                        "Item excluído com sucesso!", "Excluído!",
+                        JOptionPane.INFORMATION_MESSAGE);
+            
+            iniciaTela();
+            jButtonBuscar.doClick();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                        ex.getMessage(), "Erro ao efetuar a pesquisa!",
+                        JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAlterar;
@@ -333,6 +522,8 @@ public class FormCadastroMarcas extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonBuscar;
     private javax.swing.JButton jButtonCadastrar;
     private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JButton jButtonEditar;
+    private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonIncluir;
     private javax.swing.JButton jButtonPesquisar;
     private javax.swing.JButton jButtonSalvar;
